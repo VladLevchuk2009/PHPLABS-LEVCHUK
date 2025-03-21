@@ -1,0 +1,91 @@
+- Завдання 1
+
+<?php
+// Виведення всіх парних чисел від 1 до 20 за допомогою циклу while
+$number = 1;
+
+while ($number <= 20) {
+    if ($number % 2 == 0) {
+        echo $number . "\n";
+    }
+    $number++;
+}
+?>
+
+
+- Завдання 2
+
+<?php
+// Визначення трьох чисел
+$a = 10;
+$b = 25;
+$c = 15;
+
+// Пошук найбільшого числа
+if ($a >= $b && $a >= $c) {
+    $max = $a;
+} elseif ($b >= $a && $b >= $c) {
+    $max = $b;
+} else {
+    $max = $c;
+}
+
+// Виведення результату
+echo "Найбільше число: " . $max;
+?>
+
+
+- index(3).html
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 03</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Лабораторна робота 03</h1>
+        <p><strong>Тема:</strong> Управління потоками виконання</p>
+        <p><strong>Виконав:</strong> Левчук Владислав Олександрович</p>
+        <p><strong>Група:</strong> KN1-B22</p>
+        <a href="https://drive.google.com/file/d/1EMJqulvvAuxfYNHnUirzcxsCjDq30Gxs/view" target="_blank">Переглянути завдання</a>
+    </div>
+
+</body>
+</html>
