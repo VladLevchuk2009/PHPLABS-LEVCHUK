@@ -1,0 +1,269 @@
+Виконання завдань, варіант 2:
+
+1) create_database.sql
+
+-- Створення бази даних
+CREATE DATABASE IF NOT EXISTS BookStore;
+
+-- Використати цю базу
+USE BookStore;
+
+-- Створення таблиці Books
+CREATE TABLE IF NOT EXISTS Books (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    publication_year INT NOT NULL
+);
+
+
+2.1) update_book.php
+
+<?php
+// Параметри підключення
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "BookStore";
+
+// Підключення до БД
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Перевірка підключення
+if ($conn->connect_error) {
+    die("Помилка підключення: " . $conn->connect_error);
+}
+
+// Отримання даних з форми
+$id = $_POST['id'];
+$title = $_POST['title'];
+$author = $_POST['author'];
+$price = $_POST['price'];
+$year = $_POST['year'];
+
+// SQL-запит на оновлення
+$sql = "UPDATE Books SET 
+        title='$title',
+        author='$author',
+        price='$price',
+        publication_year='$year'
+        WHERE id='$id'";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Дані книги оновлено успішно!";
+} else {
+    echo "Помилка: " . $conn->error;
+}
+
+$conn->close();
+?>
+
+2.2) 1.html
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Оновлення книги</title>
+</head>
+<body>
+<form action="update_book.php" method="POST">
+  <label>ID книги: <input type="number" name="id" required></label><br>
+  <label>Назва: <input type="text" name="title" required></label><br>
+  <label>Автор: <input type="text" name="author" required></label><br>
+  <label>Ціна: <input type="number" step="0.01" name="price" required></label><br>
+  <label>Рік видання: <input type="number" name="year" required></label><br>
+  <button type="submit">Оновити книгу</button>
+</form>
+</body>
+</html>
+
+
+3.1) search_books.php
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "BookStore";
+
+// Підключення до БД
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Перевірка підключення
+if ($conn->connect_error) {
+    die("Помилка підключення: " . $conn->connect_error);
+}
+
+// Отримання пошукового запиту
+$search = $_POST['search'];
+
+// SQL-запит на пошук
+$sql = "SELECT * FROM Books WHERE title LIKE '%$search%'";
+$result = $conn->query($sql);
+
+// Виведення результатів
+if ($result->num_rows > 0) {
+    echo "<table border='1'>
+            <tr>
+                <th>ID</th>
+                <th>Назва</th>
+                <th>Автор</th>
+                <th>Ціна</th>
+                <th>Рік видання</th>
+            </tr>";
+    while($row = $result->fetch_assoc()) {
+        echo "<tr>
+                <td>".$row['id']."</td>
+                <td>".$row['title']."</td>
+                <td>".$row['author']."</td>
+                <td>".$row['price']."</td>
+                <td>".$row['publication_year']."</td>
+              </tr>";
+    }
+    echo "</table>";
+} else {
+    echo "Книг не знайдено.";
+}
+
+$conn->close();
+?>
+
+3.2) 2.html
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Пошук книги</title>
+</head>
+<body>
+<form action="search_books.php" method="POST">
+  <label>Пошук книги за назвою: <input type="text" name="search" required></label>
+  <button type="submit">Шукати</button>
+</form>
+</body>
+</html>
+
+
+4.1) add_book.php
+
+<?php
+// Параметри підключення
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "BookStore";
+
+// Підключення до БД
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Перевірка підключення
+if ($conn->connect_error) {
+    die("Помилка підключення: " . $conn->connect_error);
+}
+
+// Отримання даних з форми
+$title = $_POST['title'];
+$author = $_POST['author'];
+$price = $_POST['price'];
+$year = $_POST['year'];
+
+// SQL-запит на додавання книги
+$sql = "INSERT INTO Books (title, author, price, publication_year)
+        VALUES ('$title', '$author', '$price', '$year')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Книгу успішно додано!";
+} else {
+    echo "Помилка: " . $conn->error;
+}
+
+$conn->close();
+?>
+
+4.2) 3.html
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Додавання книги</title>
+</head>
+<body>
+<h2>Додати нову книгу</h2>
+<form action="add_book.php" method="POST">
+  <label>Назва: <input type="text" name="title" required></label><br>
+  <label>Автор: <input type="text" name="author" required></label><br>
+  <label>Ціна: <input type="number" step="0.01" name="price" required></label><br>
+  <label>Рік видання: <input type="number" name="year" required></label><br>
+  <button type="submit">Додати книгу</button>
+</form>
+</body>
+</html>
+
+
+Результати:
+https://drive.google.com/drive/folders/15jF2EpVnvRAtrLWBYZBtfTg8ptGbbnWi?usp=sharing
+
+
+
+
+Титульна:
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 06</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Лабораторна робота 06</h1>
+        <p><strong>Тема:</strong> Взаємодія з MySQL. CRUD операції.</p>
+        <p><strong>Виконав:</strong> Левчук Владислав Олександрович</p>
+        <p><strong>Група:</strong> KN1-B22</p>
+        <a href="https://moodle.kpnu.edu.ua/pluginfile.php/670243/mod_resource/content/0/LAB_%D0%92%D0%A2%D0%92%D0%94_2024_%2306_%D0%92%D0%B7%D0%B0%D1%94%D0%BC%D0%BE%D0%B4%D1%96%D1%8F%20%D0%B7%20MySQL.pdf" target="_blank">Переглянути завдання</a>
+    </div>
+
+</body>
+</html>
+
+Результат:
+https://drive.google.com/file/d/1YCNpn76M3dIGP5osylgyvu49b09rjHFU/view?usp=sharing
