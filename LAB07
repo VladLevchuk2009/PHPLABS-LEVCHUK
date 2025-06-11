@@ -1,0 +1,207 @@
+/student_management/
+    ├── /admin/
+    │     ├── add_student.php --1
+    │     ├── add_course.php --2
+    │     ├── add_grade.php --3
+    │
+    ├── report.php --4
+    ├── config.php --5
+    └── index.php --6
+
+--1--
+<?php
+include '../config.php';
+
+if(isset($_POST['name'])){
+    $name = $_POST['name'];
+    $sql = "INSERT INTO students (name) VALUES ('$name')";
+    $conn->query($sql);
+    echo "Студента додано!";
+}
+?>
+
+<form method="post">
+    Ім'я студента: <input type="text" name="name" required>
+    <button type="submit">Додати</button>
+</form>
+
+--2--
+<?php
+include '../config.php';
+
+if(isset($_POST['course_name'])){
+    $course_name = $_POST['course_name'];
+    $sql = "INSERT INTO courses (course_name) VALUES ('$course_name')";
+    $conn->query($sql);
+    echo "Курс додано!";
+}
+?>
+
+<form method="post">
+    Назва курсу: <input type="text" name="course_name" required>
+    <button type="submit">Додати курс</button>
+</form>
+
+--3--
+<?php
+include '../config.php';
+
+// Отримати студентів і курси для вибору
+$students = $conn->query("SELECT * FROM students");
+$courses = $conn->query("SELECT * FROM courses");
+
+if(isset($_POST['student_id']) && isset($_POST['course_id']) && isset($_POST['grade'])){
+    $student_id = $_POST['student_id'];
+    $course_id = $_POST['course_id'];
+    $grade = $_POST['grade'];
+
+    $sql = "INSERT INTO grades (student_id, course_id, grade) VALUES ('$student_id', '$course_id', '$grade')";
+    $conn->query($sql);
+    echo "Оцінку додано!";
+}
+?>
+
+<form method="post">
+    Студент:
+    <select name="student_id" required>
+        <?php while($row = $students->fetch_assoc()){ ?>
+            <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+        <?php } ?>
+    </select>
+    <br><br>
+    Курс:
+    <select name="course_id" required>
+        <?php while($row = $courses->fetch_assoc()){ ?>
+            <option value="<?php echo $row['id']; ?>"><?php echo $row['course_name']; ?></option>
+        <?php } ?>
+    </select>
+    <br><br>
+    Оцінка: <input type="number" step="0.01" name="grade" required>
+    <br><br>
+    <button type="submit">Додати оцінку</button>
+</form>
+
+--4--
+<?php
+include 'config.php';
+
+$sql = "SELECT c.course_name, AVG(g.grade) as average_grade 
+        FROM grades g
+        JOIN courses c ON g.course_id = c.id
+        GROUP BY c.course_name";
+
+$result = $conn->query($sql);
+
+echo "<h2>Середній бал по кожному курсу</h2>";
+echo "<table border='1'><tr><th>Курс</th><th>Середній бал</th></tr>";
+
+while($row = $result->fetch_assoc()){
+    echo "<tr><td>".$row['course_name']."</td><td>".round($row['average_grade'], 2)."</td></tr>";
+}
+
+echo "</table>";
+?>
+
+--5--
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "student_management";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+--6--
+<h1>Система управління студентами</h1>
+
+<ul>
+    <li><a href="admin/add_student.php">Додати студента</a></li>
+    <li><a href="admin/add_course.php">Додати курс</a></li>
+    <li><a href="admin/add_grade.php">Додати оцінку</a></li>
+    <li><a href="report.php">Переглянути звіт про середній бал</a></li>
+</ul>
+
+--sql--
+CREATE DATABASE student_management;
+
+USE student_management;
+
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE courses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE grades (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    grade FLOAT,
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);
+
+--результат--
+https://drive.google.com/drive/folders/1_oyj8jEwYtfuLqGtckUU2CTlBhgZjTu1?usp=sharing
+
+--титульна--
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 07</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Лабораторна робота 07</h1>
+        <p><strong>Тема:</strong> Міні-проєкт: створення динамічного вебдодатка.</p>
+        <p><strong>Виконав:</strong> Левчук Владислав Олександрович</p>
+        <p><strong>Група:</strong> KN1-B22</p>
+        <a href="https://moodle.kpnu.edu.ua/pluginfile.php/670767/mod_resource/content/0/LAB_%D0%92%D0%A2%D0%92%D0%94_2024_%2307_%D0%9C%D1%96%D0%BD%D1%96%20%D0%BF%D1%80%D0%BE%D1%94%D0%BA%D1%82.pdf" target="_blank">Переглянути завдання</a>
+    </div>
+
+</body>
+</html>
